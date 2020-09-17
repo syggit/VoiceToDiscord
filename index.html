@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<!--head start-->
+  <head>
+    <meta charset="UTF-8">
+    <title>VoiceToDiscord</title>
+  </head>
+<!--head end-->
+<!--body start-->
+  <body>
+
+<div id="divResult" style="font-size:20px"></div>
+
+ <!-- script src="jquery.js"></script -->
+ <script>
+
+//const divResult = document.querySelector('#result');
+//const divPendingText = document.querySelector('.pendingText');
+//const divFinalText = document.querySelector('.finalText');
+
+//document.querySelector('title').text = 'aSR '+currentVer;
+
+SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
+const recognition = new SpeechRecognition();
+recognition.lang = 'ja-JP';
+recognition.interimResults = true;
+recognition.continuous = false;
+
+recognition.onresult = (event) => {
+    let pendingText = '';
+    let finalText = '';
+    
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+        let transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+            finalText += transcript;
+        }
+		//else {
+        //    pendingText = transcript;
+        //}
+    }
+    
+    divResult.innerHTML = finalText; //'<div class="finalText" style="color: #'+finalTextColor+';'+strokeTag+'">'+finalText+'</div>';
+    //if(!pendingNone) divResult.innerHTML += '<div class="pendingText" style="color: #'+pendingTextColor+';">'+pendingText+'</div>';
+}
+
+recognition.onerror = (e) => {
+    console.log('onerror', e)
+    if (e.error == 'no-speech') { // 無音
+        try { recognition.stop(); } catch (e) {}
+        setTimeout(() => {
+            try { recognition.start(); } catch (e) {}
+        }, 500);
+
+    } else {
+        try { recognition.stop(); } catch (e) {}
+        setTimeout(() => {
+            try { recognition.start(); } catch (e) {}
+        }, 500);
+    }
+}
+
+recognition.onspeechend = (e) => {
+    setTimeout(() => {
+        try { recognition.start(); } catch (e) {}
+    }, 500);
+}
+
+
+let strokeTag = '';
+
+//if(!strokeNone){
+//    strokeTag = '-webkit-text-stroke: '+strokeSize+'px #'+strokeColor+'; text-stroke: '+strokeSize+'px #'+strokeColor+';'
+//}
+
+//if(bgColor){
+//    document.querySelector('body').style.backgroundColor = '#'+bgColor;
+//}
+
+recognition.start();
+
+setInterval(() => {
+    try { recognition.start(); } catch (e) {}
+}, 2000)
+
+</script>
+</body>
+</html>
+
