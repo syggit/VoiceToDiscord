@@ -10,7 +10,8 @@
   <body>
 
 	  <br>
-	  
+	
+	  <input type="text" id="txturl">
 <div id="divResult" style="font-size:30px"></div>
 
  <!-- script src="jquery.js"></script -->
@@ -65,7 +66,19 @@ recognition.onresult = (event) => {
         {
 		if(finalText!="")
 		{
-			alert(finalText);
+			//alert(finalText);
+			var link = txturl.value;
+
+			var username = "con";
+			var content = finalText;
+			var sty1 = 'color:#40e0d0;background:#484b52;';
+			console.log("%c Webhook Link:      " + "%s \n" + " Bot Username: " + " %s \n" + " content:  " + " %s \n", sty1, link, username, content);
+			if (link==null || link=="",content==null || content=="")
+			{
+			    alert("すべての欄に記入してください");
+			    return false;
+			}
+			$.post(link, {"content": content, "username": username});
 		}
 	        finalText="";
         }
