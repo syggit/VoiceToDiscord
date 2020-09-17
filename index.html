@@ -14,7 +14,7 @@
 	  <input type="text" id="txturl">
 <div id="divResult" style="font-size:30px"></div>
 
- <!-- script src="jquery.js"></script -->
+ <script src="jquery.js"></script>
  <script>
 
 //const divResult = document.querySelector('#result');
@@ -29,6 +29,8 @@ const recognition = new SpeechRecognition();
 recognition.lang = 'ja-JP';
 recognition.interimResults = true;
 recognition.continuous = false;
+
+txturl.value = localStorage['url'];
 
 recognition.onresult = (event) => {
     let pendingText = '';
@@ -48,6 +50,7 @@ recognition.onresult = (event) => {
 	{
 		if (event.results[i].isFinal) {
 		    finalText += transcript;
+
 		}
 		//else {
         //    pendingText = transcript;
@@ -66,6 +69,8 @@ recognition.onresult = (event) => {
         {
 		if(finalText!="")
 		{
+			localStorage['url'] = txturl.value;
+			
 			//alert(finalText);
 			var link = txturl.value;
 
