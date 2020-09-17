@@ -9,7 +9,9 @@
 <!--body start-->
   <body>
 
-<div id="divResult" style="font-size:20px"></div>
+	  <br>
+	  
+<div id="divResult" style="font-size:30px"></div>
 
  <!-- script src="jquery.js"></script -->
  <script>
@@ -18,7 +20,8 @@
 //const divPendingText = document.querySelector('.pendingText');
 //const divFinalText = document.querySelector('.finalText');
 
-//document.querySelector('title').text = 'aSR '+currentVer;
+//document.querySelector('title').text = 'aSR '+currentVe
+let finalText = '';
 
 SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
 const recognition = new SpeechRecognition();
@@ -28,18 +31,42 @@ recognition.continuous = false;
 
 recognition.onresult = (event) => {
     let pendingText = '';
-    let finalText = '';
+    let bSend=false, bClear=false;
     
     for (let i = event.resultIndex; i < event.results.length; i++) {
         let transcript = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-            finalText += transcript;
-        }
+        if(transcript==="送信")
+	{
+		bSend=true;
+	}
+        else if(transcript==="クリア")
+	{
+		bClear=true;
+	}
+	else
+	{
+		if (event.results[i].isFinal) {
+		    finalText += transcript;
+		}
 		//else {
         //    pendingText = transcript;
         //}
+	}
+	    
+	    
     }
-    
+    if(bClear==true)
+    {
+	    finalText="";
+    }
+    else
+    {
+        if(bSend==true)
+        {
+	        alert(finalText);
+	        finalText="";
+        }
+    }
     divResult.innerHTML = finalText; //'<div class="finalText" style="color: #'+finalTextColor+';'+strokeTag+'">'+finalText+'</div>';
     //if(!pendingNone) divResult.innerHTML += '<div class="pendingText" style="color: #'+pendingTextColor+';">'+pendingText+'</div>';
 }
