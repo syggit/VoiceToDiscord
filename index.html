@@ -63,7 +63,10 @@ recognition.onresult = (event) => {
     {
         if(bSend==true)
         {
-	        alert(finalText);
+		if(finalText!="")
+		{
+			alert(finalText);
+		}
 	        finalText="";
         }
     }
