@@ -50,27 +50,26 @@ recognition.onresult = (event) => {
     
     for (let i = event.resultIndex; i < event.results.length; i++) {
         let transcript = event.results[i][0].transcript;
-        if(transcript==="送信")
-	{
-		bSend=true;
-	}
-        else if(transcript==="クリア")
-	{
-		bClear=true;
-	}
-        else if(transcript==="元に戻す")
-	{
-		bUndo=true;
-	}
-	else
-	{
-		if (event.results[i].isFinal) {
-		    finalText += transcript;
-
+	if (event.results[i].isFinal) {
+        	if(transcript==="送信")
+		{
+			bSend=true;
 		}
-		else {
-            		pendingText = transcript;
-        	}
+		else if(transcript==="クリア")
+		{
+			bClear=true;
+		}
+		else if(transcript==="元に戻す")
+		{
+			bUndo=true;
+		}
+		else
+		{
+		    finalText += transcript;
+		}	
+	}
+	else {
+		pendingText = transcript;
 	}
 	    
 	    
