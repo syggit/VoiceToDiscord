@@ -206,7 +206,7 @@ setInterval(() => {
 			if(waittime<3) waittime=3;
 			if( diff > waittime*1000)
 			{
-				alert(finalText);
+				sendFinalText();
 				finalText="";
 				s_time = new Date();
 				divResult.innerText = "";
