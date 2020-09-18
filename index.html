@@ -11,10 +11,11 @@
 
 	  <br>
 	
-URL:<input type="text" id="txturl" style="background-color:#A0FFA0;display:inline" onchange="urlchg()">　　
-name:<input type="text" id="txtname" style="background-color:#80C0FF;display:inline" onchange="namechg()">
+URL:<input type="text" id="txturl" style="background-color:#A0FFA0" onchange="urlchg()">　　
+Name:<input type="text" id="txtname" style="background-color:#A0D0FF" onchange="namechg()">　　
+WaitTime:<input type="text" id="txtwait" style="background-color:#C0C0C0" onchange="waitchg()" value="10">
 <br>
-<div id="divResult" style="font-size:30px;color:#000000"></div><div id="divResultP" style="font-size:30px;color:#A0A0A0"></div>
+<div id="divResult" style="font-size:30px;color:#000000;display: inline-block; _display: inline"></div><div id="divResultP" style="font-size:30px;color:#FF8000;display: inline-block; _display: inline"></div>
 
  <script src="jquery.js"></script>
  <script>
@@ -26,7 +27,9 @@ name:<input type="text" id="txtname" style="background-color:#80C0FF;display:inl
 //document.querySelector('title').text = 'aSR '+currentVe
 let finalText = '';
 let u1="",u2="",u3="",u4="",u5="";
-	 
+var s_time = null;
+
+	  
 SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
 const recognition = new SpeechRecognition();
 recognition.lang = 'ja-JP';
@@ -42,6 +45,34 @@ if (localStorage['name'] !== undefined) {
 else
 {
 	txtname.value = "bot";
+}
+if (localStorage['wait'] !== undefined) {
+	txtwait.value = localStorage['wait'];
+}
+	
+function sendFinalText()
+{
+	if(finalText!="")
+	{
+		localStorage['url'] = txturl.value;
+		localStorage['name'] = txtname.value;
+		localStorage['wait'] = txtwait.value;
+
+		//alert(finalText);
+		var link = txturl.value;
+
+		var username = txtname.value;
+		var content = finalText;
+		var sty1 = 'color:#40e0d0;background:#484b52;';
+		console.log("%c Webhook Link:      " + "%s \n" + " Bot Username: " + " %s \n" + " content:  " + " %s \n", sty1, link, username, content);
+		if (link==null || link=="",content==null || content=="")
+		{
+		    alert("すべての欄に記入してください");
+		    return false;
+		}
+		$.post(link, {"content": content, "username": username});
+	}
+	finalText="";
 }
 
 recognition.onresult = (event) => {
@@ -65,11 +96,15 @@ recognition.onresult = (event) => {
 		}
 		else
 		{
+			if(transcript!="")
+				s_time = new Date();
 		    finalText += transcript;
 		}	
 	}
 	else {
 		pendingText = transcript;
+		if(transcript!="")
+			s_time = new Date();
 	}
 	    
 	    
@@ -90,34 +125,15 @@ recognition.onresult = (event) => {
 	    }
 	    else
 	    {
-		if(bSend==true)
-		{
-			if(finalText!="")
+			if(bSend==true)
 			{
-				localStorage['url'] = txturl.value;
-				localStorage['name'] = txtname.value;
-
-				//alert(finalText);
-				var link = txturl.value;
-
-				var username = txtname.value;
-				var content = finalText;
-				var sty1 = 'color:#40e0d0;background:#484b52;';
-				console.log("%c Webhook Link:      " + "%s \n" + " Bot Username: " + " %s \n" + " content:  " + " %s \n", sty1, link, username, content);
-				if (link==null || link=="",content==null || content=="")
-				{
-				    alert("すべての欄に記入してください");
-				    return false;
-				}
-				$.post(link, {"content": content, "username": username});
+				sendFinalText();
 			}
-			finalText="";
-		}
 	    }
     }
-    divResult.innerHTML = finalText; //'<div class="finalText" style="color: #'+finalTextColor+';'+strokeTag+'">'+finalText+'</div>';
+    divResult.innerText = finalText; //'<div class="finalText" style="color: #'+finalTextColor+';'+strokeTag+'">'+finalText+'</div>';
     //if(!pendingNone) divResult.innerHTML += '<div class="pendingText" style="color: #'+pendingTextColor+';">'+pendingText+'</div>';
-	divResultP.innerHTML = pendingText;
+	divResultP.innerText = pendingText;
 	
 	if(u1!=finalText)
 	{
@@ -159,6 +175,10 @@ function namechg()
 {
 	localStorage['name'] = txtname.value;
 }
+function waitchg()
+{
+	localStorage['wait'] = txtwait.value;
+}
 
 let strokeTag = '';
 
@@ -175,6 +195,25 @@ recognition.start();
 setInterval(() => {
     try { recognition.start(); } catch (e) {}
 }, 2000)
+
+setInterval(() => {
+	if(finalText!="")
+	{
+		var e_time = new Date();
+		if(s_time != null ) {
+			var diff = e_time.getTime() - s_time.getTime();
+			var waittime = parseInt(txtwait.value);
+			if(waittime<3) waittime=3;
+			if( diff > waittime*1000)
+			{
+				alert(finalText);
+				s_time = new Date();
+				divResult.innerText = "";
+				divResultP.innerText = "";
+			}
+		}
+	}
+}, 1000)
 
 </script>
 </body>
