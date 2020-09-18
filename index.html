@@ -11,7 +11,9 @@
 
 	  <br>
 	
-	  <input type="text" id="txturl">
+URL:<input type="text" id="txturl" style="background-color:#A0FFA0" onchange="urlchg()">　　
+name:<input type="text" id="txtname" style="background-color:#80C0FF" onchange="namechg()">
+<br>
 <div id="divResult" style="font-size:30px"></div>
 
  <script src="jquery.js"></script>
@@ -30,7 +32,16 @@ recognition.lang = 'ja-JP';
 recognition.interimResults = true;
 recognition.continuous = false;
 
-txturl.value = localStorage['url'];
+if (localStorage['url'] !== undefined) {
+	txturl.value = localStorage['url'];
+}
+if (localStorage['name'] !== undefined) {
+	txtname.value = localStorage['name'];
+}
+else
+{
+	txtname.value = "bot";
+}
 
 recognition.onresult = (event) => {
     let pendingText = '';
@@ -70,11 +81,12 @@ recognition.onresult = (event) => {
 		if(finalText!="")
 		{
 			localStorage['url'] = txturl.value;
+			localStorage['name'] = txtname.value;
 			
 			//alert(finalText);
 			var link = txturl.value;
 
-			var username = "con";
+			var username = txtname.value;
 			var content = finalText;
 			var sty1 = 'color:#40e0d0;background:#484b52;';
 			console.log("%c Webhook Link:      " + "%s \n" + " Bot Username: " + " %s \n" + " content:  " + " %s \n", sty1, link, username, content);
@@ -114,6 +126,14 @@ recognition.onspeechend = (e) => {
     }, 500);
 }
 
+function urlchg()
+{
+	localStorage['url'] = txturl.value;
+}
+function namechg()
+{
+	localStorage['name'] = txtname.value;
+}
 
 let strokeTag = '';
 
