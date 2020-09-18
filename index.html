@@ -14,7 +14,7 @@
 URL:<input type="text" id="txturl" style="background-color:#A0FFA0" onchange="urlchg()">　　
 name:<input type="text" id="txtname" style="background-color:#80C0FF" onchange="namechg()">
 <br>
-<div id="divResult" style="font-size:30px"></div>
+<div id="divResult" style="font-size:30px;color:#000000"></div><div id="divResultP" style="font-size:30px;color:#A0A0A0"></div>
 
  <script src="jquery.js"></script>
  <script>
@@ -63,9 +63,9 @@ recognition.onresult = (event) => {
 		    finalText += transcript;
 
 		}
-		//else {
-        //    pendingText = transcript;
-        //}
+		else {
+            		pendingText = transcript;
+        	}
 	}
 	    
 	    
@@ -102,6 +102,7 @@ recognition.onresult = (event) => {
     }
     divResult.innerHTML = finalText; //'<div class="finalText" style="color: #'+finalTextColor+';'+strokeTag+'">'+finalText+'</div>';
     //if(!pendingNone) divResult.innerHTML += '<div class="pendingText" style="color: #'+pendingTextColor+';">'+pendingText+'</div>';
+	divResultP.innerHTML = pendingText;
 }
 
 recognition.onerror = (e) => {
