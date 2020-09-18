@@ -26,6 +26,8 @@ WaitTime:<input type="text" id="txtwait" style="background-color:#C0C0C0" onchan
 
 //document.querySelector('title').text = 'aSR '+currentVe
 let finalText = '';
+let pendingText = '';
+
 let u1="",u2="",u3="",u4="",u5="";
 var s_time = null;
 
@@ -52,7 +54,7 @@ if (localStorage['wait'] !== undefined) {
 	
 function sendFinalText()
 {
-	if(finalText!="")
+	if(finalText+pendingText!="")
 	{
 		localStorage['url'] = txturl.value;
 		localStorage['name'] = txtname.value;
@@ -62,7 +64,7 @@ function sendFinalText()
 		var link = txturl.value;
 
 		var username = txtname.value;
-		var content = finalText;
+		var content = finalText+pendingText;
 		var sty1 = 'color:#40e0d0;background:#484b52;';
 		console.log("%c Webhook Link:      " + "%s \n" + " Bot Username: " + " %s \n" + " content:  " + " %s \n", sty1, link, username, content);
 		if (link==null || link=="",content==null || content=="")
@@ -73,10 +75,16 @@ function sendFinalText()
 		$.post(link, {"content": content, "username": username});
 	}
 	finalText="";
+	pendingText="";
+	u1="";
+	u2="";
+	u3="";
+	u4="";
+	u5="";
 }
 
 recognition.onresult = (event) => {
-    let pendingText = '';
+    pendingText = '';
     let bSend=false, bClear=false, bUndo=false;
     
     for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -96,6 +104,11 @@ recognition.onresult = (event) => {
 		}
 		else
 		{
+		    if(transcript==="はてな")
+			    transcript="？";
+		    if(transcript==="句点")
+			    transcript="。";
+			
 			if(transcript!="")
 				s_time = new Date();
 		    finalText += transcript;
@@ -197,17 +210,18 @@ setInterval(() => {
 }, 2000)
 
 setInterval(() => {
-	if(finalText!="")
+	if(finalText+pendingText!="")
 	{
 		var e_time = new Date();
 		if(s_time != null ) {
 			var diff = e_time.getTime() - s_time.getTime();
 			var waittime = parseInt(txtwait.value);
-			if(waittime<3) waittime=3;
+			if(waittime<2) waittime=2;
 			if( diff > waittime*1000)
 			{
 				sendFinalText();
 				finalText="";
+				pendingText="";
 				s_time = new Date();
 				divResult.innerText = "";
 				divResultP.innerText = "";
