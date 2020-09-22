@@ -210,14 +210,22 @@ setInterval(() => {
 }, 2000)
 
 setInterval(() => {
-	if(finalText+pendingText!="")
-	{
-		var e_time = new Date();
-		if(s_time != null ) {
-			var diff = e_time.getTime() - s_time.getTime();
-			var waittime = parseInt(txtwait.value);
-			if(waittime<3) waittime=3;
-			if( diff > waittime*1000)
+	var e_time = new Date();
+	if(s_time != null ) {
+		var diff = e_time.getTime() - s_time.getTime();
+		var waittime = parseInt(txtwait.value);
+		if(waittime<3) waittime=3;
+		if( diff > waittime*1000)
+		{
+			if(pendingText=="クリア")
+			{
+				finalText="";
+				pendingText="";
+				s_time = new Date();
+				divResult.innerText = "";
+				divResultP.innerText = "";
+			}
+			if(finalText+pendingText!="")
 			{
 				sendFinalText();
 				finalText="";
